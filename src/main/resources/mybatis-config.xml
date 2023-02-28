@@ -12,9 +12,7 @@
 	<typeAliases>
 		<typeAlias type="java.util.UUID" alias="UUID"/>
 	</typeAliases>
-	<typeHandlers>
-		<typeHandler handler="com.fds.typehandler.StringArrayTypeHandler"/>
-	</typeHandlers>
 	<mappers>
+		<mapper resource="com/viewmanager/dao/mapper/ViewMapper.xml"/>
 	</mappers>
 </configuration>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.viewmanager.dao.mapper.ViewMapper">
+
+    <select id="dropView">
+        DROP VIEW ${view_name};
+    </select>
+
+    <select id="dropMatView">
+        DROP MATERIALIZED VIEW ${view_name};
+    </select>
+
+    <select id="createView" resultType="String">
+        CREATE VIEW ${view_name} AS ${sql};
+    </select>
+
+    <select id="getAllViewsFromDB">
+        SELECT viewname
+        FROM pg_catalog.pg_views
+        WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
+        UNION ALL
+        SELECT matviewname
+        FROM pg_matviews
+        ;
+    </select>
+
+</mapper>

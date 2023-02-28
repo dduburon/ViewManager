@@ -1,19 +1,19 @@
-package util;
+package com.viewmanager.util;
 
-import config.ViewMConfig;
-import config.ViewMOrderedList;
-import org.apache.log4j.Logger;
-import pojo.ViewPojo;
+import com.viewmanager.config.ViewMConfig;
+import com.viewmanager.config.ViewMOrderedList;
+import com.viewmanager.pojo.ViewPojo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ViewMVerifier {
 
-    final static Logger logger = Logger.getLogger(ViewMVerifier.class);
+    final static Logger logger = LoggerFactory.getLogger(ViewMVerifier.class);
 
     public static void verifyConfig() {
         verifySQLFilesExist();
@@ -43,13 +43,7 @@ public class ViewMVerifier {
     private static void verifySQLFilesAreRegistered(){
         List<String> missingReg = new ArrayList<>();
         for (File file : Objects.requireNonNull(ViewMConfig.getViewsLoc().listFiles())) {
-            if(!ViewMOrderedList.getViewList().stream().anyMatch(v -> v.getFileName().endsWith(file.getName()))
-                    && !file.getName().contains("_old") && !file.getName().contains("_dep")
-                    && !file.getName().contains("_withoutview")
-                    && !Arrays.asList("ListOfViews.txt",
-                            "next_matchup_view.sql",
-                            "wr_role_view_WIP.sql")
-                    .contains(file.getName())) {
+            if(!ViewMOrderedList.containsFile(file.getName())) {
                 missingReg.add(file.getName());
             }
         }

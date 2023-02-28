@@ -1,15 +1,16 @@
-package config;
+package com.viewmanager.config;
 
-import util.ViewMEnvUtil;
+import com.viewmanager.util.ViewMEnvUtil;
 
 import java.io.*;
 import java.util.Properties;
-import org.apache.log4j.Logger;
-import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ViewMConfig {
 
-    final static Logger logger = Logger.getLogger(ViewMConfig.class);
+    final static Logger logger = LoggerFactory.getLogger(ViewMConfig.class);
 
     private static Properties configProp;
 

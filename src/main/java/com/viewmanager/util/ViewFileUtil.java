@@ -1,7 +1,8 @@
-package util;
+package com.viewmanager.util;
 
-import org.apache.log4j.Logger;
-import pojo.ViewPojo;
+import com.viewmanager.pojo.ViewPojo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 public class ViewFileUtil {
 
-    final static Logger logger = Logger.getLogger(ViewFileUtil.class);
+    final static Logger logger = LoggerFactory.getLogger(ViewFileUtil.class);
 
     public static final String VIEW_CREATE_START_SEP = "-----VIEW-MANAGER-CREATE-VIEW-START-----";
     public static final String VIEW_CREATE_END_SEP = "-----VIEW-MANAGER-CREATE-VIEW-END-----";
@@ -39,7 +40,7 @@ public class ViewFileUtil {
                 }
             }
         } catch (FileNotFoundException e) {
-            logger.error(e);
+            logger.error("SQL File ({}) related to view was not found.", viewFile.getName(), e);
         }
         if (!foundStart && sqlStr.isEmpty()) {
             logger.error(String.format("SQL File '%s' not properly annotated.", viewFile.getName()));
