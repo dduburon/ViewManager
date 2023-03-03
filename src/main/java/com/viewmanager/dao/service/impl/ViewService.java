@@ -35,7 +35,11 @@ public class ViewService implements IViewService {
         try {
             viewMapper.dropView(view_name);
         } catch (UncategorizedSQLException e) {
-            return SQLExceptionInterpreter.interpret(e);
+            List<ViewPojo> dependent = SQLExceptionInterpreter.interpret(e);
+            if (dependent.isEmpty()) {
+
+            }
+            return dependent;
         }
         return null;
     }

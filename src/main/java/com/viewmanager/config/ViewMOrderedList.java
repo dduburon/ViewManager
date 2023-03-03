@@ -26,7 +26,7 @@ public class ViewMOrderedList {
             viewList = new Properties();
             viewList.load(stream);
         } catch (IOException e) {
-            logger.error("Error encoutered loading config property file");
+            logger.error("Error encountered loading config property file");
         }
         blockingViewList = Collections.synchronizedList(new ArrayList<>());
         for (String key : viewList.stringPropertyNames()) {
@@ -41,7 +41,7 @@ public class ViewMOrderedList {
         }
     }
 
-    private static String getViewListFileLocString() {
+    public static String getViewListFileLocString() {
         return ViewMEnvUtil.CONFIG_LOC + VIEW_LIST_NAME;
     }
 
@@ -122,7 +122,7 @@ public class ViewMOrderedList {
                         c.setProperty(view.getNameWithType(), new File(view.getFileName()).getName());
                     }
                 }
-            }, VIEW_LIST_NAME).save();
+            }, getViewListFileLocString()).save();
         } catch (ConfigurationException e) {
             logger.error("Error writing property file", e);
         }

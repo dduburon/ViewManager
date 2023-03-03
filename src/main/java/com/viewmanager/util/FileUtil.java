@@ -24,9 +24,8 @@ public class FileUtil {
     final static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
     public static FileBasedConfigurationBuilder toProperties(ListToProp propBuilder, String filePath) {
-        String fileName = ViewMEnvUtil.CONFIG_LOC + filePath;
-        backupExistingFile(fileName);
-        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = getPropertyWriter(fileName);
+        backupExistingFile(filePath);
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = getPropertyWriter(filePath);
         Configuration config = null;
         try {
             config = builder.getConfiguration();
@@ -58,6 +57,9 @@ public class FileUtil {
         return builder;
     }
 
+    public static void touchFile(File file) {
+        touchFile(file.getPath());
+    }
     public static void touchFile(String path) {
         Path p = Path.of(path);
         try {

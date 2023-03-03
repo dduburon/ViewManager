@@ -1,5 +1,6 @@
 package com.viewmanager.util;
 
+import com.viewmanager.config.ViewMDependencyCache;
 import com.viewmanager.config.ViewMOrderedList;
 import com.viewmanager.pojo.ViewPojo;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ public class ViewMSorter {
         sortBasedOnDependencies();// a Quick sort
         fullSort(); // Should be a full sort
         ViewMOrderedList.writeToPropertyFile();
+        ViewMDependencyCache.writeToPropertyFile();
     }
 
     private static void sortBasedOnDependencies() {
