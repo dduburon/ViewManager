@@ -43,7 +43,7 @@ public class ViewMVerifier {
     private static void verifySQLFilesAreRegistered(){
         List<String> missingReg = new ArrayList<>();
         for (File file : Objects.requireNonNull(ViewMConfig.getViewsLoc().listFiles())) {
-            if(!ViewMOrderedList.containsFile(file.getName())) {
+            if(!ViewMOrderedList.ignoreFile(file.getName()) && !ViewMOrderedList.containsFile(file.getName())) {
                 missingReg.add(file.getName());
             }
         }

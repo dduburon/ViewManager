@@ -58,9 +58,13 @@ public class ViewMOrderedList {
 
     public static boolean containsFile(String fileName) {
         return getViewList().stream().anyMatch(v -> v.getFileName().endsWith(fileName))
-                && !fileName.contains("_old") && !fileName.contains("_dep")
-                && !fileName.contains("_withoutview")
-                && !Arrays.asList("ListOfViews.txt",
+                && !ignoreFile(fileName);
+    }
+
+    public static boolean ignoreFile(String fileName) {
+        return fileName.contains("_old") || fileName.contains("_dep")
+                || fileName.contains("_withoutview") || fileName.contains("_without_view")
+                || Arrays.asList("ListOfViews.txt",
                         "next_matchup_view.sql",
                         "wr_role_view_WIP.sql")
                 .contains(fileName);
