@@ -13,7 +13,7 @@ public class ViewMSorter {
 
     final static Logger logger = LoggerFactory.getLogger(ViewMSorter.class);
 
-    public static void sortViewRegistry() {
+    public static void genViewRegistry() {
         calcViewDependency();
         sortBasedOnDependencies();// a Quick sort
         fullSort(); // Should be a full sort

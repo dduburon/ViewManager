@@ -16,12 +16,22 @@ public class Main {
             default:
                 ViewMExecUtil.verify();
                 break;
-            case "S": //Sort
-                ViewMSorter.sortViewRegistry();
+            case "G": //Generate View Registry and Dependency Cache
+                ViewMSorter.genViewRegistry();
                 break;
             case "C": // Create All
                 ViewMBulkActions.createAllIgnoreErrors();
                 break;
+            case "U": {// Uninstall View
+                String view = args[1];
+                ViewMExecUtil.uninstall(view);
+                break;
+            }
+            case "I": {// Install View
+                String view = args[1];
+                ViewMExecUtil.install(view);
+                break;
+            }
         }
     }
 }

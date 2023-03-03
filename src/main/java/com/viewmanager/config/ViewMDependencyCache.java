@@ -11,9 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ViewMDependencyCache {
@@ -37,8 +35,15 @@ public class ViewMDependencyCache {
             for (String dependName : rawDep.split(",")) {
                 dependencies.add(ViewMOrderedList.getViewPojoByName(dependName));
             }
+            dependencies = sortDependencies(dependencies);
         }
         return dependencies;
+    }
+
+    private static List<ViewPojo> sortDependencies(List<ViewPojo> dependenciesOrig) {
+        List<ViewPojo> newOrder = new ArrayList<>(dependenciesOrig);
+        Collections.sort(newOrder, Comparator.comparing(v -> ViewMOrderedList.getViewList().indexOf(v)));
+        return newOrder;
     }
 
     private static String viewDependencyCacheLocation() {
