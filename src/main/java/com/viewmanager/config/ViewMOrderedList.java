@@ -1,15 +1,21 @@
 package com.viewmanager.config;
 
 import com.viewmanager.pojo.ViewPojo;
+import com.viewmanager.util.FileUtil;
 import com.viewmanager.util.ViewMEnvUtil;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class ViewMOrderedList {
 
@@ -20,7 +26,7 @@ public class ViewMOrderedList {
     public static final String VIEW_LIST_NAME = "viewlist.properties";
 
     static {
-        try (InputStream stream = new FileInputStream(ViewMEnvUtil.CONFIG_LOC + VIEW_LIST_NAME)) {
+        try (InputStream stream = new FileInputStream(getViewListFileLocString())) {
             viewList = new Properties();
             viewList.load(stream);
         } catch (IOException e) {
@@ -37,6 +43,10 @@ public class ViewMOrderedList {
             }
             blockingViewList.add(view);
         }
+    }
+
+    private static String getViewListFileLocString() {
+        return ViewMEnvUtil.CONFIG_LOC + VIEW_LIST_NAME;
     }
 
     protected static List<ViewPojo> getLiveViewList() {
@@ -77,6 +87,71 @@ public class ViewMOrderedList {
     public static void sortViewList(Comparator comp) {
         synchronized (blockingViewList) {
             Collections.sort(getLiveViewList(),comp);
+        }
+    }
+
+    public static void sortFullViewList() {
+        synchronized (blockingViewList) {
+            List<ViewPojo> liveViewList = getLiveViewList();
+            for (int i = 0, liveViewListSize = liveViewList.size(); i < liveViewListSize; i++) {
+                ViewPojo viewPojo = liveViewList.get(i);
+                if (viewPojo.getDependentViews() == null) {
+                    continue;
+                }
+                for (ViewPojo dependent : viewPojo.getDependentViews()) {
+                    boolean moved = false;
+                    int d = getLiveViewList().indexOf(dependent);
+                    if (d > i) {
+                        //Move it to below the dependent view.
+                        blockingViewList.remove(viewPojo);
+                        blockingViewList.add(d, viewPojo);
+                        moved = true;
+                    }
+                    if (moved) {
+                        i--; // Check this index again.
+                    }
+                }
+            }
+        }
+    }
+
+    public static FileBasedConfigurationBuilder toProperties(String filename) {
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder = getPropertyWriter(filename);
+        File propFile = new File(filename);
+        propFile.setLastModified(Instant.now().toEpochMilli());
+        Configuration config = null;
+        try {
+            config = builder.getConfiguration();
+        } catch (ConfigurationException e) {
+            logger.error("Error building property writer.", e);
+        }
+        Properties properties = new Properties();
+        for (ViewPojo view : getViewList()) {
+            if (view.getFileName().endsWith(view.getName() + ViewMConfig.getViewFileSuffix())) {
+                config.setProperty(view.getNameWithType(), "");
+            } else {
+                config.setProperty(view.getNameWithType(), new File(view.getFileName()).getName());
+            }
+        }
+        return builder;
+    }
+
+    public static FileBasedConfigurationBuilder<FileBasedConfiguration> getPropertyWriter(String filename) {
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFileName(filename));
+        return builder;
+    }
+
+    public static void writeToPropertyFile() {
+        String pathname = ViewMEnvUtil.CONFIG_LOC + "viewlist.test.properties";
+        FileUtil.touchFile(pathname);
+        try {
+            toProperties(pathname).save();
+        } catch (ConfigurationException e) {
+            logger.error("Error writing property file", e);
         }
     }
 }

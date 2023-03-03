@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ public class ViewPojo {
     String name;
     String fileName;
     Type type = Type.V;
-    List<ViewPojo> dependentViews = new ArrayList<>();
+    List<ViewPojo> dependentViews;
 
     public enum Type {
         V, // Normal View
@@ -51,5 +51,13 @@ public class ViewPojo {
             return nameNoSuffix;
         }
         return name;
+    }
+
+    public String getNameWithType() {
+        if (getType().equals(Type.V)) {
+            return getName();
+        } else {
+            return getType().name().toLowerCase() + "_" + getName();
+        }
     }
 }

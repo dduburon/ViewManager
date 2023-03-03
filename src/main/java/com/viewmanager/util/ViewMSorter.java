@@ -14,8 +14,9 @@ public class ViewMSorter {
 
     public static void sortViewRegistry() {
         calcViewDependency();
-        sortBasedOnDependencies();
-        int a = 4;
+        sortBasedOnDependencies();// a Quick sort
+        fullSort(); // Should be a full sort
+        ViewMOrderedList.writeToPropertyFile();
     }
 
     private static void sortBasedOnDependencies() {
@@ -49,5 +50,9 @@ public class ViewMSorter {
             curView.setDependentViews(dependedBy);
             ViewMOrderedList.updateDependencies(curView);
         }
+    }
+
+    private static void fullSort() {
+        ViewMOrderedList.sortFullViewList();
     }
 }
