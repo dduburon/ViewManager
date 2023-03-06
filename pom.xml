@@ -138,18 +138,18 @@
                         <artifactId>ViewManager</artifactId>
                         <version>${project.version}</version>
                     </dependency>
-                    <dependency>
-                        <groupId>org.testng</groupId>
-                        <artifactId>testng</artifactId>
-                        <version>${testng.version}</version>
-                        <scope>test</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.powermock</groupId>
-                        <artifactId>powermock-module-testng</artifactId>
-                        <version>${powermock.version}</version>
-                        <scope>test</scope>
-                    </dependency>
+<!--                    <dependency>-->
+<!--                        <groupId>org.testng</groupId>-->
+<!--                        <artifactId>testng</artifactId>-->
+<!--                        <version>${testng.version}</version>-->
+<!--                        <scope>test</scope>-->
+<!--                    </dependency>-->
+<!--                    <dependency>-->
+<!--                        <groupId>org.powermock</groupId>-->
+<!--                        <artifactId>powermock-module-testng</artifactId>-->
+<!--                        <version>${powermock.version}</version>-->
+<!--                        <scope>test</scope>-->
+<!--                    </dependency>-->
                 </dependencies>
             </plugin>
             <plugin>
