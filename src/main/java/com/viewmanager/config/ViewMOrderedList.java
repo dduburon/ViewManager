@@ -66,12 +66,7 @@ public class ViewMOrderedList {
     }
 
     public static boolean ignoreFile(String fileName) {
-        return fileName.contains("_old") || fileName.contains("_dep")
-                || fileName.contains("_withoutview") || fileName.contains("_without_view")
-                || Arrays.asList("ListOfViews.txt",
-                        "next_matchup_view.sql",
-                        "wr_role_view_WIP.sql")
-                .contains(fileName);
+        return ViewMIgnoreList.ignoreFile(fileName);
     }
 
     public static ViewPojo getViewPojoByName(String name) {

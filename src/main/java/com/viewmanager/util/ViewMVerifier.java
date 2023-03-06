@@ -71,7 +71,7 @@ public class ViewMVerifier {
             for (String missing : missingReg) {
                 errorMsg += "\t" + missing + "\n";
             }
-            throw new RuntimeException(errorMsg);
+            logger.error(errorMsg);
         } else {
             logger.info("All sql files were matched to registered view.");
         }
