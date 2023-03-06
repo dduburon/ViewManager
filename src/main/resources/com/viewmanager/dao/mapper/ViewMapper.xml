@@ -14,7 +14,7 @@
         CREATE VIEW ${view_name} AS ${sql};
     </select>
 
-    <select id="getAllViewsFromDB">
+    <select id="getAllViewsFromDB" resultType="String">
         SELECT viewname
         FROM pg_catalog.pg_views
         WHERE schemaname NOT IN ('pg_catalog', 'information_schema')

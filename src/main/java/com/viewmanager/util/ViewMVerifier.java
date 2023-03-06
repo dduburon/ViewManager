@@ -16,9 +16,28 @@ public class ViewMVerifier {
     final static Logger logger = LoggerFactory.getLogger(ViewMVerifier.class);
 
     public static void verifyConfig() {
+        verifySQLViewsAreRegistered();
         verifySQLFilesExist();
         verifySQLFilesAreRegistered();
         verifySQLFilesAreAnnotated();
+    }
+
+    private static void verifySQLViewsAreRegistered() {
+        List<String> unregistered = new ArrayList<>();
+        for (String dbView : ViewServiceUtil.getViewService().getAllViewsFromDB()) {
+            if(!ViewMOrderedList.containsView(dbView)) {
+                unregistered.add(dbView);
+            }
+        }
+        if (!unregistered.isEmpty()) {
+            String errorMsg = "The following views were found to be unregistered: \n ";
+            for (String view : unregistered) {
+                errorMsg += "\t" + view + "\n";
+            }
+            logger.error(errorMsg);
+        } else {
+            logger.info("All views in DB are registered.");
+        }
     }
 
     private static void verifySQLFilesExist() {

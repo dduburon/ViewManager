@@ -61,6 +61,10 @@ public class ViewMOrderedList {
                 && !ignoreFile(fileName);
     }
 
+    public static boolean containsView(String viewName) {
+        return getViewList().stream().anyMatch(v -> v.getName().equals(viewName));
+    }
+
     public static boolean ignoreFile(String fileName) {
         return fileName.contains("_old") || fileName.contains("_dep")
                 || fileName.contains("_withoutview") || fileName.contains("_without_view")
