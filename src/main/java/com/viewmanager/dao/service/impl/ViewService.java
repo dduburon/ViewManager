@@ -74,8 +74,17 @@ public class ViewService implements IViewService {
     }
 
     @Override
+    public void createMatView(String view_name, String sql) {
+        viewMapper.createMatView(view_name, sql);
+    }
+
+    @Override
     public void createView(ViewPojo view, String sql) {
-        viewMapper.createView(view.getName(), sql);
+        if (view.getType().equals(ViewPojo.Type.M)) {
+            viewMapper.createMatView(view.getName(), sql);
+        } else {
+            viewMapper.createView(view.getName(), sql);
+        }
     }
 
     @Override

@@ -32,6 +32,7 @@ public class ViewMBulkActions {
     public static void uninstallView(String viewParam) {
         ViewPojo view = verifyViewGiven(viewParam);
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
+        Collections.reverse(dependencies);
         for (ViewPojo dependency : dependencies) {
             ViewServiceUtil.getViewService().dropView(dependency);
             logger.info("View '{}' successfully dropped.",dependency.getName());
@@ -49,7 +50,6 @@ public class ViewMBulkActions {
         }
         ViewServiceUtil.getViewService().createView(view);
         logger.info("View '{}' successfully created.",view.getName());
-        Collections.reverse(dependencies);
         for (ViewPojo dependency : dependencies) {
             ViewServiceUtil.getViewService().createView(dependency);
             logger.info("View '{}' successfully created.",dependency.getName());

@@ -12,6 +12,8 @@ public interface IViewService {
 
     void createView(String view_name, String sql);
 
+    void createMatView(String view_name, String sql);
+
     void createView(ViewPojo view, String sql);
 
     void createView(String view_name);
