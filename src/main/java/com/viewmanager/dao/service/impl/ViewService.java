@@ -96,7 +96,7 @@ public class ViewService implements IViewService {
     @Override
     public void createView(ViewPojo view) {
         String sql = ViewFileUtil.getSQLFromViewFile(view);
-        viewMapper.createView(view.getName(), sql);
+        createView(view, sql);
     }
 
     @Override
