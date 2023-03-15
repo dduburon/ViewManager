@@ -1,5 +1,6 @@
 package com.viewmanager.dao.service.impl;
 
+import com.viewmanager.config.ViewMOrderedList;
 import com.viewmanager.dao.service.IViewService;
 import com.viewmanager.dao.mapper.ViewMapper;
 import com.viewmanager.util.SQLExceptionInterpreter;
@@ -18,7 +19,6 @@ import java.util.List;
 @Service
 @Scope(proxyMode = ScopedProxyMode.INTERFACES)
 public class ViewService implements IViewService {
-
 
     @Inject
     private ViewMapper viewMapper;
@@ -69,11 +69,6 @@ public class ViewService implements IViewService {
     }
 
     @Override
-    public void createView(String view_name, String sql) {
-        viewMapper.createView(view_name, sql);
-    }
-
-    @Override
     public void createMatView(String view_name, String sql) {
         viewMapper.createMatView(view_name, sql);
     }
@@ -89,8 +84,8 @@ public class ViewService implements IViewService {
 
     @Override
     public void createView(String view_name) {
-        String sql = ViewFileUtil.getSQLFromViewFile(view_name);
-        viewMapper.createView(view_name, sql);
+        ViewPojo viewPojo = ViewMOrderedList.getViewPojoByName(view_name);
+        createView(viewPojo);
     }
 
     @Override
