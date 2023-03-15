@@ -32,10 +32,12 @@ public class ViewMBulkActions {
     public static void uninstallView(String viewParam) {
         ViewPojo view = verifyViewGiven(viewParam);
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
-        Collections.reverse(dependencies);
-        for (ViewPojo dependency : dependencies) {
-            ViewServiceUtil.getViewService().dropView(dependency);
-            logger.info("View '{}' successfully dropped.",dependency.getName());
+        if(dependencies != null && !dependencies.isEmpty()) {
+            Collections.reverse(dependencies);
+            for (ViewPojo dependency : dependencies) {
+                ViewServiceUtil.getViewService().dropView(dependency);
+                logger.info("View '{}' successfully dropped.", dependency.getName());
+            }
         }
         ViewServiceUtil.getViewService().dropView(view);
         logger.info("View '{}' successfully dropped.",view.getName());
@@ -44,15 +46,13 @@ public class ViewMBulkActions {
     public static void installView(String viewParam) {
         ViewPojo view = verifyViewGiven(viewParam);
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
-        if (dependencies == null || dependencies.isEmpty()) {
-            logger.error("Trying to install View but no dependencies were found for {}", view.getName());
-            throw new RuntimeException();
-        }
         ViewServiceUtil.getViewService().createView(view);
         logger.info("View '{}' successfully created.",view.getName());
-        for (ViewPojo dependency : dependencies) {
-            ViewServiceUtil.getViewService().createView(dependency);
-            logger.info("View '{}' successfully created.",dependency.getName());
+        if (dependencies != null && !dependencies.isEmpty()) {
+            for (ViewPojo dependency : dependencies) {
+                ViewServiceUtil.getViewService().createView(dependency);
+                logger.info("View '{}' successfully created.", dependency.getName());
+            }
         }
     }
 
