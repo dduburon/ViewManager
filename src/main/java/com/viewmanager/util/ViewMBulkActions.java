@@ -2,6 +2,8 @@ package com.viewmanager.util;
 
 import com.viewmanager.config.ViewMDependencyCache;
 import com.viewmanager.config.ViewMOrderedList;
+import com.viewmanager.exception.SQLExceptionInterpreter;
+import com.viewmanager.exception.ViewManagerIntelligenException;
 import com.viewmanager.pojo.ViewPojo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,12 @@ public class ViewMBulkActions {
     final static Logger logger = LoggerFactory.getLogger(ViewMBulkActions.class);
 
     public static void createAllIgnoreErrors() {
-        for (ViewPojo view : ViewMOrderedList.getViewList()) {
+        List<ViewPojo> viewList = ViewMOrderedList.getViewList();
+        for (ViewPojo view : viewList) {
             try {
                 ViewServiceUtil.getViewService().createView(view);
-            } catch (UncategorizedSQLException | BadSqlGrammarException e) {
+            } catch (RuntimeException e) {
+                ViewManagerIntelligenException smartExcpetion = SQLExceptionInterpreter.interpret(e);
                 //Ignore
                 continue;
             } catch (Exception e) {
@@ -36,7 +40,6 @@ public class ViewMBulkActions {
             Collections.reverse(dependencies);
             for (ViewPojo dependency : dependencies) {
                 ViewServiceUtil.getViewService().dropView(dependency);
-                logger.info("View '{}' successfully dropped.", dependency.getName());
             }
         }
         ViewServiceUtil.getViewService().dropView(view);
