@@ -18,9 +18,9 @@ public class SQLExceptionInterpreter {
             if (hasErrorFormat((Exception) sqlException, DEPENDENCY_ERROR_FORMAT)) {
                 return new SQLExceptionWithDependencies((PSQLException) sqlException);
             } else if (hasErrorFormat((Exception) sqlException, ALREADY_EXISTS_ERROR_FORMAT)) {
-                return new SQLAlreadyExistsException((PSQLException) sqlException);
+                return new ViewAlreadyExistsException((PSQLException) sqlException);
             } else if (hasErrorFormat((Exception) sqlException, DOESNT_EXISTS_ERROR_FORMAT)) {
-                return new SQLDoesntExistsException((PSQLException) sqlException);
+                return new ViewDoesntExistsException((PSQLException) sqlException);
             }
         }
         throw new RuntimeException(e);

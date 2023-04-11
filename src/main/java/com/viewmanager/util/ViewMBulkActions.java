@@ -19,17 +19,7 @@ public class ViewMBulkActions {
     public static void createAllIgnoreErrors() {
         List<ViewPojo> viewList = ViewMOrderedList.getViewList();
         for (ViewPojo view : viewList) {
-            try {
-                ViewServiceUtil.getViewService().createView(view);
-            } catch (RuntimeException e) {
-                ViewManagerIntelligenException smartExcpetion = SQLExceptionInterpreter.interpret(e);
-                //Ignore
-                continue;
-            } catch (Exception e) {
-                logger.error("Unknown error from view {} ({})",view.getName(),view.getFileName(), e);
-                continue;
-            }
-            logger.info("Successfully added view {} ({})",view.getName(),view.getFileName());
+            ViewServiceUtil.getViewService().createView(view);
         }
     }
 
@@ -43,18 +33,15 @@ public class ViewMBulkActions {
             }
         }
         ViewServiceUtil.getViewService().dropView(view);
-        logger.info("View '{}' successfully dropped.",view.getName());
     }
 
     public static void installView(String viewParam) {
         ViewPojo view = verifyViewGiven(viewParam);
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
         ViewServiceUtil.getViewService().createView(view);
-        logger.info("View '{}' successfully created.",view.getName());
         if (dependencies != null && !dependencies.isEmpty()) {
             for (ViewPojo dependency : dependencies) {
                 ViewServiceUtil.getViewService().createView(dependency);
-                logger.info("View '{}' successfully created.", dependency.getName());
             }
         }
     }
