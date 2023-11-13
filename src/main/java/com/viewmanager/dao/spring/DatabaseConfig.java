@@ -25,8 +25,8 @@ public class DatabaseConfig implements ApplicationContextAware {
 	public static final String SQL_SESSION_FACTORY = "sqlSessionFactoryBean";
 	ApplicationContext applicationContext;
 
-	@Bean(name = SQL_SESSION_FACTORY)
-	public static SqlSessionFactoryBean sqlSessionFactory() throws Exception {
+	@Bean
+	public static SqlSessionFactoryBean sqlSessionFactoryBean() throws Exception {
 		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setConfigLocation(
@@ -38,7 +38,7 @@ public class DatabaseConfig implements ApplicationContextAware {
 	public static MapperScannerConfigurer myBatisScanner(SqlSessionFactoryBean sqlSessionFactoryBean) {
 		MapperScannerConfigurer result = new MapperScannerConfigurer();
 		result.setBasePackage("com.viewmanager.dao.mapper");
-		result.setSqlSessionFactoryBeanName(SQL_SESSION_FACTORY);
+//		result.setSqlSessionFactoryBeanName(SQL_SESSION_FACTORY);
 		return result;
 	}
 
