@@ -3,16 +3,22 @@ package com.viewmanager.exec;
 import com.viewmanager.util.ViewMBulkActions;
 import com.viewmanager.util.ViewMExecUtil;
 import com.viewmanager.util.ViewMSorter;
+import org.apache.commons.cli.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        String mode = null;
-        if (args.length >= 1) {
-            mode = args[0];
-        }
+    public static void main(String[] args) throws ParseException {
+        // create Options object
+        Options options = new Options();
+
+        options.addOption("a", true, "Action to pass the program. Availabe Actions are:\n" +
+                "V - Verify config\nG - Generate\nC - Create All\nU - Uninstall (requires view name)\nI - Install (requires view name)");
+        options.addOption("v", true, "View Name to install / uninstall.");
+        CommandLineParser parser = new DefaultParser();
+        CommandLine cmd = parser.parse(options, args);
+        String mode = cmd.getOptionValue("a");
         switch (mode) {
-            case "V": //Verify
+            case "V": //Verify config
             default:
                 ViewMExecUtil.verify();
                 break;
@@ -23,15 +29,23 @@ public class Main {
                 ViewMBulkActions.createAllIgnoreErrors();
                 break;
             case "U": {// Uninstall View
-                String view = args[1];
+                String view = cmd.getOptionValue("v");
                 ViewMExecUtil.uninstall(view);
                 break;
             }
             case "I": {// Install View
-                String view = args[1];
+                String view = cmd.getOptionValue("v");
                 ViewMExecUtil.install(view);
                 break;
             }
         }
+    }
+
+    public enum MODE {
+        V, //Verify
+        G, //Generate
+        C, //Create All Views
+        U, //Uninstall
+        I //Install
     }
 }
