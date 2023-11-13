@@ -1,10 +1,11 @@
 package com.viewmanager.config;
 
-import com.viewmanager.pojo.ViewPojo;
+import com.viewmanager.util.FileUtil;
 import com.viewmanager.util.ViewMEnvUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,7 +55,12 @@ public class ViewMIgnoreList {
     }
 
     public static String getViewFileIgnoreList() {
-        return ViewMEnvUtil.CONFIG_LOC + VIEW_FILE_IGNORE_NAME;
+        String ignoreFileLoc = ViewMEnvUtil.CONFIG_LOC + VIEW_FILE_IGNORE_NAME;
+        File ignoreFile = new File(ignoreFileLoc);
+        if (ignoreFile.exists()) {
+            FileUtil.touchFile(ignoreFile);
+        }
+        return ignoreFileLoc;
     }
 
     public static boolean ignoreFile(String fileName) {

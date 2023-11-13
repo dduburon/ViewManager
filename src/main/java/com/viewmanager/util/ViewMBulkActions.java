@@ -2,13 +2,10 @@ package com.viewmanager.util;
 
 import com.viewmanager.config.ViewMDependencyCache;
 import com.viewmanager.config.ViewMOrderedList;
-import com.viewmanager.exception.SQLExceptionInterpreter;
-import com.viewmanager.exception.ViewManagerIntelligenException;
 import com.viewmanager.pojo.ViewPojo;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.jdbc.UncategorizedSQLException;
 
 import java.util.Collections;
 import java.util.List;
@@ -47,15 +44,13 @@ public class ViewMBulkActions {
     }
 
     private static ViewPojo verifyViewGiven(String viewParam) {
-        String paramPrefix = "view=";
-        if (!viewParam.startsWith(paramPrefix)) {
+        if (StringUtils.isEmpty(viewParam)) {
             logger.error("View name not set.");
             throw new RuntimeException();
         }
-        String viewStr = viewParam.replace(paramPrefix, "");
-        ViewPojo view = ViewMOrderedList.getViewPojoByName(viewStr);
+        ViewPojo view = ViewMOrderedList.getViewPojoByName(viewParam);
         if (view == null) {
-            logger.error("View not found by name '{}'", viewStr);
+            logger.error("View not found by name '{}'", viewParam);
             throw new RuntimeException();
         }
         return view;

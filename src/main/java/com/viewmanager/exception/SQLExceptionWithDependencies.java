@@ -3,8 +3,8 @@ package com.viewmanager.exception;
 import com.viewmanager.config.ViewMOrderedList;
 import com.viewmanager.pojo.ViewPojo;
 import lombok.Getter;
-import org.postgresql.util.PSQLException;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,11 +18,11 @@ public class SQLExceptionWithDependencies implements ViewManagerIntelligenExcept
     @Getter
     List<ViewPojo> dependentViews = new ArrayList<>();
 
-    public SQLExceptionWithDependencies(PSQLException e) {
+    public SQLExceptionWithDependencies(SQLException e) {
         parse(e);
     }
 
-    private void parse(PSQLException e) {
+    private void parse(SQLException e) {
         String message = e.getMessage();
         Scanner scan = new Scanner(message);
         List<String> dependentViewStrList = scan.findAll(DEPENDENCY_ERROR_FORMAT)

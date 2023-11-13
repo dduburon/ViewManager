@@ -3,7 +3,9 @@ package com.viewmanager.config;
 import com.viewmanager.pojo.ViewPojo;
 import com.viewmanager.util.FileUtil;
 import com.viewmanager.util.ViewMEnvUtil;
+import com.viewmanager.util.ViewServiceUtil;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,21 +30,43 @@ public class ViewMOrderedList {
         } catch (IOException e) {
             logger.error("Error encountered loading config property file");
         }
+        boolean saveProps = false;
         blockingViewList = Collections.synchronizedList(new ArrayList<>());
+        if (viewList.isEmpty()) {
+            viewList = generateViewFileReltn();
+            saveProps = true;
+        }
         for (String key : viewList.stringPropertyNames()) {
             String viewFileName = (String) viewList.get(key);
             ViewPojo view;
-            if (viewFileName == null || viewFileName.isEmpty()) {
+            if (StringUtils.isEmpty(viewFileName)) {
                 view = new ViewPojo(key);
             } else {
                 view = new ViewPojo(key, viewFileName);
             }
             blockingViewList.add(view);
         }
+        if (saveProps) {
+            writeToPropertyFile();
+        }
+    }
+
+    private static Properties generateViewFileReltn() {
+        Properties result = new Properties();
+        for (String dbViewName : ViewServiceUtil.getViewService().getAllViewsFromDB()) {
+            ViewPojo tempView = new ViewPojo(dbViewName);
+            result.setProperty(dbViewName, tempView.getFileName());
+        }
+        return result;
     }
 
     public static String getViewListFileLocString() {
-        return ViewMEnvUtil.CONFIG_LOC + VIEW_LIST_NAME;
+        String viewFileReltn = ViewMEnvUtil.CONFIG_LOC + VIEW_LIST_NAME;
+        File viewFileReltnFile = new File(viewFileReltn);
+        if(!viewFileReltnFile.exists()) {
+            FileUtil.touchFile(viewFileReltnFile);
+        }
+        return viewFileReltn;
     }
 
     protected static List<ViewPojo> getLiveViewList() {

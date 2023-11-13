@@ -25,7 +25,8 @@ public class ViewMVerifier {
     private static void verifySQLViewsAreRegistered() {
         List<String> unregistered = new ArrayList<>();
         for (String dbView : ViewServiceUtil.getViewService().getAllViewsFromDB()) {
-            if(!ViewMOrderedList.containsView(dbView)) {
+            ViewPojo dbViewPojo = new ViewPojo(dbView);
+            if(!ViewMOrderedList.containsView(dbViewPojo.getName())) {
                 unregistered.add(dbView);
             }
         }
@@ -80,11 +81,16 @@ public class ViewMVerifier {
 
     private static void verifySQLFilesAreAnnotated() {
         List<String> neglectedFiles = new ArrayList<>();
+        int fnfCount = 0;
         for (ViewPojo view : ViewMOrderedList.getViewList()) {
             String sqlText = ViewFileUtil.getSQLFromViewFile(view);
             if(sqlText.isEmpty() || sqlText.length() < 10) {
                 neglectedFiles.add(view.getName());
+                fnfCount++;
             }
+        }
+        if (fnfCount > 0) {
+            throw new RuntimeException(String.format("The corresponding file of %d views were not found. You've got some work to do.", fnfCount));
         }
         if (!neglectedFiles.isEmpty()) {
             String errorMsg = "SQL Files Not correctly annotated: \n ";

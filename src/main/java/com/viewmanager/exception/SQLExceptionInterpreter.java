@@ -1,8 +1,9 @@
 package com.viewmanager.exception;
 
-import org.postgresql.util.PSQLException;
-import org.springframework.jdbc.BadSqlGrammarException;
 
+import org.postgresql.util.PSQLException;
+
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +17,11 @@ public class SQLExceptionInterpreter {
         Throwable sqlException = e.getCause();
         if (sqlException != null && sqlException instanceof PSQLException) {
             if (hasErrorFormat((Exception) sqlException, DEPENDENCY_ERROR_FORMAT)) {
-                return new SQLExceptionWithDependencies((PSQLException) sqlException);
+                return new SQLExceptionWithDependencies((SQLException) sqlException);
             } else if (hasErrorFormat((Exception) sqlException, ALREADY_EXISTS_ERROR_FORMAT)) {
-                return new ViewAlreadyExistsException((PSQLException) sqlException);
+                return new ViewAlreadyExistsException((SQLException) sqlException);
             } else if (hasErrorFormat((Exception) sqlException, DOESNT_EXISTS_ERROR_FORMAT)) {
-                return new ViewDoesntExistsException((PSQLException) sqlException);
+                return new ViewDoesntExistsException((SQLException) sqlException);
             }
         }
         throw new RuntimeException(e);
@@ -43,7 +44,7 @@ public class SQLExceptionInterpreter {
         throw new RuntimeException("Expected to find view name, but did not. Pattern: " + errorFormat, e);
     }
 
-    private static ViewManagerIntelligenException interpretBadSQL(BadSqlGrammarException e) {
-        return null;
-    }
+//    private static ViewManagerIntelligenException interpretBadSQL(BadSqlGrammarException e) {
+//        return null;
+//    }
 }

@@ -23,7 +23,7 @@
         FROM pg_catalog.pg_views
         WHERE schemaname NOT IN ('pg_catalog', 'information_schema')
         UNION ALL
-        SELECT matviewname
+        SELECT 'm_' || matviewname
         FROM pg_matviews
         ;
     </select>
