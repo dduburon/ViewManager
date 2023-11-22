@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,10 +24,25 @@ public class ViewMBulkActions {
     public static void uninstallView(String viewParam) {
         ViewPojo view = verifyViewGiven(viewParam);
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
+        List<ViewPojo> dropedViews = new ArrayList<>();
         if(dependencies != null && !dependencies.isEmpty()) {
             Collections.reverse(dependencies);
             for (ViewPojo dependency : dependencies) {
-                ViewServiceUtil.getViewService().dropView(dependency);
+                if (!dropedViews.contains(dependency)) {
+                    List<ViewPojo> secondLvl = ViewMDependencyCache.getCachedDependencies(view);
+                    boolean clear_to_drop = true;
+                    for (ViewPojo depOfDep : secondLvl) {
+                        if(!dropedViews.contains(dependency)) {
+                            clear_to_drop = false;
+                        }
+                    }
+                    if(!clear_to_drop) {
+                        uninstallView(dependency.getName());
+                    }
+                    ViewServiceUtil.getViewService().dropView(dependency);
+                    dropedViews.add(dependency);
+                }
+
             }
         }
         ViewServiceUtil.getViewService().dropView(view);
