@@ -32,7 +32,7 @@ public class ViewMBulkActions {
                     List<ViewPojo> secondLvl = ViewMDependencyCache.getCachedDependencies(view);
                     boolean clear_to_drop = true;
                     for (ViewPojo depOfDep : secondLvl) {
-                        if(!dropedViews.contains(dependency)) {
+                        if(!dropedViews.contains(depOfDep)) {
                             clear_to_drop = false;
                         }
                     }
