@@ -19,7 +19,7 @@ public class ViewMOrderedList {
 
     final static Logger logger = LoggerFactory.getLogger(ViewMOrderedList.class);
     private static Properties viewList;
-    private static List<ViewPojo> blockingViewList;
+    private static final List<ViewPojo> blockingViewList;
 
     public static final String VIEW_LIST_NAME = "ViewFileReltn.properties";
 

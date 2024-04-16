@@ -19,7 +19,7 @@ public class ViewPojo {
     public enum Type {
         V, // Normal View
         M, // Materialized View
-        F; // Function
+        F // Function
     }
 
 
@@ -34,8 +34,8 @@ public class ViewPojo {
     }
 
     public ViewPojo(ViewPojo vp) {
-        setName(vp.getName() + "");
-        setFileName(vp.getFileName() + "");
+        setName(vp.getName());
+        setFileName(vp.getFileName());
         setType(vp.getType());
         setDependentViews(vp.getDependentViews());
     }
