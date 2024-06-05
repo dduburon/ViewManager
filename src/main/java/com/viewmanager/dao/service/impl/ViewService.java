@@ -95,6 +95,7 @@ public class ViewService implements IViewService {
 
     @Override
     public void createView(ViewPojo view, String sql) {
+        logger.debug("Creating view '{}'.", view.getName());
         try {
             if (view.getType().equals(ViewPojo.Type.M)) {
                 viewMapper.createMatView(view.getName(), sql);
