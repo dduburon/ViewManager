@@ -45,12 +45,12 @@ public class ViewService implements IViewService {
     public List<ViewPojo> dropView(ViewPojo view) {
         try {
             if (view.getType().equals(ViewPojo.Type.M)) {
-                viewMapper.dropMatView(view.getName());
+                viewMapper.dropMatView(view);
             } else {
-                viewMapper.dropView(view.getName());
+                viewMapper.dropView(view);
             }
         } catch (RuntimeException e) {
-            ViewManagerIntelligenException interpret = SQLExceptionInterpreter.interpret(e);
+            ViewManagerIntelligenException interpret = SQLExceptionInterpreter.interpret(view, e);
             if (interpret instanceof ViewDoesntExistsException) {
                 if (!view.getName().equals(((ViewDoesntExistsException) interpret).getViewName())) {
                     throw new RuntimeException("Attempted to drop view: " + view.getName(),e);
@@ -65,8 +65,8 @@ public class ViewService implements IViewService {
         return null;
     }
 
-    private List<ViewPojo> getDependenciesFromException(UncategorizedSQLException e) {
-        ViewManagerIntelligenException smartException = SQLExceptionInterpreter.interpret(e);
+    private List<ViewPojo> getDependenciesFromException(ViewPojo view, UncategorizedSQLException e) {
+        ViewManagerIntelligenException smartException = SQLExceptionInterpreter.interpret(view, e);
         List<ViewPojo> dependent =  new ArrayList<>();
         if (smartException.getType().equals("DEPENDENCY")) {
             dependent = ((SQLExceptionWithDependencies) smartException).getDependentViews();
@@ -78,11 +78,11 @@ public class ViewService implements IViewService {
     }
 
     @Override
-    public List<ViewPojo> dropMatView(String view_name) {
+    public List<ViewPojo> dropMatView(ViewPojo view) {
         try {
-            viewMapper.dropMatView(view_name);
+            viewMapper.dropMatView(view);
         } catch (UncategorizedSQLException e) {
-            List<ViewPojo> dependent = getDependenciesFromException(e);
+            List<ViewPojo> dependent = getDependenciesFromException(view, e);
             if (dependent != null) return dependent;
         }
         return null;
@@ -103,7 +103,7 @@ public class ViewService implements IViewService {
                 viewMapper.createView(view.getName(), sql);
             }
         } catch (RuntimeException e) {
-            ViewManagerIntelligenException interpret = SQLExceptionInterpreter.interpret(e);
+            ViewManagerIntelligenException interpret = SQLExceptionInterpreter.interpret(view, e);
             if (interpret instanceof ViewAlreadyExistsException) {
                 if (!view.getName().equals(((ViewAlreadyExistsException) interpret).getViewName())) {
                     throw new RuntimeException("Attempted to create view: " + view.getName(),e);

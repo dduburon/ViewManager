@@ -1,6 +1,7 @@
 package com.viewmanager.exception;
 
 
+import com.viewmanager.pojo.ViewPojo;
 import org.postgresql.util.PSQLException;
 
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ public class SQLExceptionInterpreter {
     public static final String ALREADY_EXISTS_ERROR_FORMAT = "ERROR: relation \"(.*)\" already exists";
     public static final String DEPENDENCY_ERROR_FORMAT = "view (.*) depends on ";
 
-    public static ViewManagerIntelligenException interpret(Exception e) {
+    public static ViewManagerIntelligenException interpret(ViewPojo view, Exception e) {
         Throwable sqlException = e.getCause();
         if (sqlException != null && sqlException instanceof PSQLException) {
             if (hasErrorFormat((Exception) sqlException, DEPENDENCY_ERROR_FORMAT)) {
@@ -24,7 +25,7 @@ public class SQLExceptionInterpreter {
                 return new ViewDoesntExistsException((SQLException) sqlException);
             }
         }
-        throw new RuntimeException(e);
+        throw new RuntimeException("Error on view: " + view.getName(), e);
     }
 
     public static boolean hasErrorFormat(Exception e, String errorFormat) {
