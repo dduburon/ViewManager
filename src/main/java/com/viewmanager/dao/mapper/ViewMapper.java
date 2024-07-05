@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface ViewMapper {
 
-    void dropView(@Param("view_name") ViewPojo view_name) throws UncategorizedSQLException;
-    void dropMatView(@Param("view_name") ViewPojo view) throws UncategorizedSQLException;
+    void dropView(@Param("view") ViewPojo view_name) throws UncategorizedSQLException;
+    void dropMatView(@Param("view") ViewPojo view) throws UncategorizedSQLException;
     void createView(@Param("view_name") String view_name, @Param("sql") String sql);
     void createMatView(@Param("view_name") String view_name, @Param("sql") String sql);
     List<String> getAllViewsFromDB();

@@ -97,7 +97,13 @@ public class ViewMOrderedList {
         return getViewPojoByName(getViewList(), name);
     }
     public static ViewPojo getViewPojoByName(List<ViewPojo> list, String name) {
-        return list.stream().filter(v -> v.getName().equals(name)).findFirst().get();
+        ViewPojo viewPojo;
+        try {
+            viewPojo = list.stream().filter(v -> v.getName().equals(name)).findFirst().get();
+        } catch (NoSuchElementException e) {
+            throw new RuntimeException(String.format("Could not find view '%s'", name), e);
+        }
+        return viewPojo;
     }
 
     public static void updateDependencies(ViewPojo viewWithDependencies) {

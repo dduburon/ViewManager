@@ -3,11 +3,11 @@
 <mapper namespace="com.viewmanager.dao.mapper.ViewMapper">
 
     <select id="dropView">
-        DROP VIEW ${view_name};
+        DROP VIEW ${view.name};
     </select>
 
     <select id="dropMatView">
-        DROP MATERIALIZED VIEW ${view_name};
+        DROP MATERIALIZED VIEW ${view.name};
     </select>
 
     <select id="createView" resultType="String">
