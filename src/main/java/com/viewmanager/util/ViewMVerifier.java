@@ -68,7 +68,7 @@ public class ViewMVerifier {
             }
         }
         if (!missingReg.isEmpty()) {
-            String errorMsg = "The following view files were not found: \n ";
+            String errorMsg = "The following view files were not found to be associated to a known view: \n ";
             for (String missing : missingReg) {
                 errorMsg += "\t" + missing + "\n";
             }
