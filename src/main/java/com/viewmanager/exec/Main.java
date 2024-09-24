@@ -5,6 +5,9 @@ import com.viewmanager.util.ViewMExecUtil;
 import com.viewmanager.util.ViewMSorter;
 import org.apache.commons.cli.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) throws ParseException {
@@ -34,8 +37,16 @@ public class Main {
                 break;
             }
             case "I": {// Install View
-                String view = cmd.getOptionValue("v");
-                ViewMExecUtil.install(view);
+                String viewProp = cmd.getOptionValue("v");
+                List<String> viewList = new ArrayList();
+                if (viewProp.contains(",")) {
+                    viewList.addAll(List.of(viewProp.split(",")));
+                } else {
+                    viewList.add(viewProp);
+                }
+                for (String view : viewList) {
+                    ViewMExecUtil.install(view);
+                }
                 break;
             }
         }
