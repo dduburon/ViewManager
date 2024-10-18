@@ -59,6 +59,8 @@ public class ViewService implements IViewService {
                 }
             } else if (interpret instanceof SQLExceptionWithDependencies) {
                 return ((SQLExceptionWithDependencies) interpret).getDependentViews();
+            } else if (interpret instanceof ViewIsMaterializedException) {
+                throw new ViewIsMaterializedException(e);
             }
         }
         logger.info("View '{}' successfully dropped.", view.getName());

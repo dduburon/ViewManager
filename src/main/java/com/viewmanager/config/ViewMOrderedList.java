@@ -113,6 +113,18 @@ public class ViewMOrderedList {
         }
     }
 
+    public static void updateView(ViewPojo updatedView) {
+        synchronized (blockingViewList) {
+            Optional<ViewPojo> first = getLiveViewList().stream().filter(v -> v.getName().equals(updatedView.getName())).findFirst();
+            int i = getLiveViewList().size() - 1;
+            if (!first.isEmpty()) {
+                i = getLiveViewList().indexOf(first.get());
+                getLiveViewList().remove(first.get());
+            }
+            getLiveViewList().add(i, updatedView);
+        }
+    }
+
     public static void sortViewList(Comparator comp) {
         synchronized (blockingViewList) {
             Collections.sort(getLiveViewList(),comp);

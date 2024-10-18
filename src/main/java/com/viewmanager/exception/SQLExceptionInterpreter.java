@@ -12,6 +12,7 @@ public class SQLExceptionInterpreter {
 
     public static final String DOESNT_EXISTS_ERROR_FORMAT = "ERROR:.* view \"(.*)\" does not exist";
     public static final String ALREADY_EXISTS_ERROR_FORMAT = "ERROR: relation \"(.*)\" already exists";
+    public static final String MAT_VIEW_EXCEPTION = "ERROR: \"(.*)\" is not a view";
     public static final String DEPENDENCY_ERROR_FORMAT = "view (.*) depends on ";
 
     public static ViewManagerIntelligenException interpret(ViewPojo view, Exception e) {
@@ -22,6 +23,8 @@ public class SQLExceptionInterpreter {
             } else if (hasErrorFormat((Exception) sqlException, ALREADY_EXISTS_ERROR_FORMAT)) {
                 return new ViewAlreadyExistsException((SQLException) sqlException);
             } else if (hasErrorFormat((Exception) sqlException, DOESNT_EXISTS_ERROR_FORMAT)) {
+                return new ViewDoesntExistsException((SQLException) sqlException);
+            } else if (hasErrorFormat((Exception) sqlException, MAT_VIEW_EXCEPTION)) {
                 return new ViewDoesntExistsException((SQLException) sqlException);
             }
         }

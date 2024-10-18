@@ -2,23 +2,34 @@ package com.viewmanager.util;
 
 import com.viewmanager.config.ViewMDependencyCache;
 import com.viewmanager.config.ViewMOrderedList;
+import com.viewmanager.exception.ViewIsMaterializedException;
 import com.viewmanager.pojo.ViewPojo;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
 
+import static com.viewmanager.util.ViewFileUtil.getMissingViewsFromFileRepository;
+
 public class ViewMSorter {
 
     final static Logger logger = LoggerFactory.getLogger(ViewMSorter.class);
 
     public static void genViewRegistry() {
+        addMissingViews();
         calcViewDependency();
         sortBasedOnDependencies();// a Quick sort
         fullSort(); // Should be a full sort
         ViewMOrderedList.writeToPropertyFile();
         ViewMDependencyCache.writeToPropertyFile();
+    }
+
+    private static void addMissingViews() {
+        for (ViewPojo newView : getMissingViewsFromFileRepository()) {
+            ViewMOrderedList.updateView(newView);
+        }
     }
 
     private static void sortBasedOnDependencies() {
@@ -29,6 +40,10 @@ public class ViewMSorter {
         List<ViewPojo> viewList = ViewMOrderedList.getViewList();
         for (ViewPojo curView : viewList) {
             try {
+                updateDependencies(curView);
+            } catch (ViewIsMaterializedException materializedException) {
+                curView.setType(ViewPojo.Type.M);
+                ViewMOrderedList.updateView(curView);
                 updateDependencies(curView);
             } catch (Exception e) {
                 try {
@@ -46,12 +61,11 @@ public class ViewMSorter {
 
     private static void updateDependencies(ViewPojo curView) {
         List<ViewPojo> dependedBy = ViewServiceUtil.getViewService().dropView(curView);
-        if (dependedBy == null || dependedBy.isEmpty()) {
-            ViewServiceUtil.getViewService().createView(curView);
-        } else {
+        if (!CollectionUtils.isEmpty(dependedBy)) {
             curView.setDependentViews(dependedBy);
             ViewMOrderedList.updateDependencies(curView);
         }
+        ViewServiceUtil.getViewService().createView(curView);
     }
 
     private static void fullSort() {

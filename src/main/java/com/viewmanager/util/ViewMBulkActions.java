@@ -29,12 +29,14 @@ public class ViewMBulkActions {
             Collections.reverse(dependencies);
             for (ViewPojo dependency : dependencies) {
                 if (!dropedViews.contains(dependency)) {
-                    List<ViewPojo> secondLvl = ViewMDependencyCache.getCachedDependencies(view);
+                    List<ViewPojo> secondLvl = ViewMDependencyCache.getCachedDependencies(dependency);
                     boolean clear_to_drop = true;
-                    for (ViewPojo depOfDep : secondLvl) {
-                        if (!dropedViews.contains(depOfDep)) {
-                            clear_to_drop = false;
-                            break;
+                    if(secondLvl != null) {
+                        for (ViewPojo depOfDep : secondLvl) {
+                            if (!dropedViews.contains(depOfDep)) {
+                                clear_to_drop = false;
+                                break;
+                            }
                         }
                     }
                     if(!clear_to_drop) {
