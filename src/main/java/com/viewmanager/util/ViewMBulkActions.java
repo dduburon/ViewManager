@@ -22,30 +22,19 @@ public class ViewMBulkActions {
     }
 
     public static void uninstallView(String viewParam) {
-        ViewPojo view = verifyViewGiven(viewParam);
+        uninstallView(verifyViewGiven(viewParam));
+
+    }
+    public static void uninstallView(ViewPojo view) {
         List<ViewPojo> dependencies = ViewMDependencyCache.getCachedDependencies(view);
         List<ViewPojo> dropedViews = new ArrayList<>();
         if(dependencies != null && !dependencies.isEmpty()) {
             Collections.reverse(dependencies);
             for (ViewPojo dependency : dependencies) {
                 if (!dropedViews.contains(dependency)) {
-                    List<ViewPojo> secondLvl = ViewMDependencyCache.getCachedDependencies(dependency);
-                    boolean clear_to_drop = true;
-                    if(secondLvl != null) {
-                        for (ViewPojo depOfDep : secondLvl) {
-                            if (!dropedViews.contains(depOfDep)) {
-                                clear_to_drop = false;
-                                break;
-                            }
-                        }
-                    }
-                    if(!clear_to_drop) {
-                        uninstallView(dependency.getName());
-                    }
-                    ViewServiceUtil.getViewService().dropView(dependency);
+                    uninstallView(dependency);
                     dropedViews.add(dependency);
                 }
-
             }
         }
         ViewServiceUtil.getViewService().dropView(view);

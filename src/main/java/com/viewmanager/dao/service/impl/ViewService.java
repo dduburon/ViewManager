@@ -49,7 +49,9 @@ public class ViewService implements IViewService {
             } else {
                 viewMapper.dropView(view);
             }
+            view.setErrored(false);
         } catch (RuntimeException e) {
+            view.setErrored(true);
             ViewManagerIntelligenException interpret = SQLExceptionInterpreter.interpret(view, e);
             if (interpret instanceof ViewDoesntExistsException) {
                 if (!view.getName().equals(((ViewDoesntExistsException) interpret).getViewName())) {

@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 @Getter
 @Setter
@@ -14,6 +13,7 @@ public class ViewPojo {
     String name;
     String fileName;
     Type type = Type.V;
+    boolean errored = false;
     List<ViewPojo> dependentViews;
 
     public enum Type {
