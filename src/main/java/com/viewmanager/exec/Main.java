@@ -19,24 +19,24 @@ public class Main {
         options.addOption("v", true, "View Name to install / uninstall.");
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options, args);
-        String mode = cmd.getOptionValue("a");
+        MODE mode = MODE.valueOf(cmd.getOptionValue("a"));
         switch (mode) {
-            case "V": //Verify config
+            case V: //Verify config
             default:
                 ViewMExecUtil.verify();
                 break;
-            case "G": //Generate View Registry and Dependency Cache
+            case G: //Generate View Registry and Dependency Cache
                 ViewMSorter.genViewRegistry();
                 break;
-            case "C": // Create All
+            case C: // Create All
                 ViewMBulkActions.createAllIgnoreErrors();
                 break;
-            case "U": {// Uninstall View
+            case U: {// Uninstall View
                 String view = cmd.getOptionValue("v");
                 ViewMExecUtil.uninstall(view);
                 break;
             }
-            case "I": {// Install View
+            case I: {// Install View
                 String viewProp = cmd.getOptionValue("v");
                 List<String> viewList = new ArrayList();
                 if (viewProp.contains(",")) {
