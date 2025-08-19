@@ -33,7 +33,15 @@ public class Main {
                 break;
             case U: {// Uninstall View
                 String view = cmd.getOptionValue("v");
-                ViewMExecUtil.uninstall(view);
+                List<String> viewList = new ArrayList();
+                if (view.contains(",")) {
+                    viewList.addAll(List.of(view.split(",")));
+                } else {
+                    viewList.add(view);
+                }
+                for (String viewStr : viewList) {
+                    ViewMExecUtil.uninstall(viewStr);
+                }
                 break;
             }
             case I: {// Install View
