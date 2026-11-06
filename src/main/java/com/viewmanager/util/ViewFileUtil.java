@@ -44,7 +44,7 @@ public class ViewFileUtil {
                 }
             }
         } catch (FileNotFoundException e) {
-            logger.error("SQL File ({}) related to view was not found.", viewFile.getName());
+            logger.error("SQL File ({}) related to view was not found. Looked at {}", viewFile.getName(), viewFile.getAbsolutePath());
         }
         if (!foundStart && sqlStr.isEmpty()) {
             logger.error(String.format("SQL File '%s' not properly annotated.", viewFile.getName()));
